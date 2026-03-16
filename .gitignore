@@ -1,0 +1,23 @@
+# Environment variables
+.env
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ios recorder output
+ios-recorder-captures/
+
+# macOS
+.DS_Store
+
+# Archived / unused code
+.archive/
