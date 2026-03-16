@@ -351,6 +351,34 @@ def pull_crash_logs(udid: str, system_logs_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Log stream capture
+# ---------------------------------------------------------------------------
+
+def start_log_stream(
+    udid: str,
+    output_path: Path,
+    bundle_id: Optional[str] = None,
+) -> tuple[subprocess.Popen[str], Any]:
+    """Start a background unified log stream. Returns (process, file_handle)."""
+    cmd = [sys.executable, "-m", "pymobiledevice3", "syslog", "live", "--udid", udid]
+    if bundle_id:
+        cmd.extend(["--match", bundle_id])
+    fh = output_path.open("w")
+    proc = subprocess.Popen(cmd, stdout=fh, stderr=subprocess.DEVNULL, text=True)
+    return proc, fh
+
+
+def stop_log_stream(proc: subprocess.Popen[str], fh: Any) -> None:
+    """Terminate the log stream process and close the output file."""
+    proc.terminate()
+    try:
+        proc.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+    fh.close()
+
+
+# ---------------------------------------------------------------------------
 # Log parsing
 # ---------------------------------------------------------------------------
 

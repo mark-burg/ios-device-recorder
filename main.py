@@ -40,6 +40,7 @@ def main() -> None:
     img_path = system_dir / f"SCREENSHOT_{date_str}.png"
     log_path = system_dir / f"APP_LOGS_{date_str}.log"
     report_path = system_dir / f"REPORT_{date_str}.json"
+    log_stream_path = system_dir / f"LOG_STREAM_{date_str}.log"
 
     # Tunneld + device
     proc = ios.ensure_tunneld()
@@ -53,8 +54,16 @@ def main() -> None:
         logger.error("Device not found.")
         return
 
+    # Log stream capture (runs in background during recording)
+    log_stream_proc, log_stream_fh = ios.start_log_stream(udid, log_stream_path, APP_BUNDLE_ID)
+    logger.info("Log stream started.")
+
     # Record
     ios.record_video(video_path)
+
+    # Stop log stream
+    ios.stop_log_stream(log_stream_proc, log_stream_fh)
+    logger.info("Log stream captured.")
 
     # Screenshot
     ios.take_screenshot(img_path)

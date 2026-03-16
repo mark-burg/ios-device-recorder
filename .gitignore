@@ -15,6 +15,7 @@ __pycache__/
 
 # ios recorder output
 ios-recorder-captures/
+ios-device-recordings/
 
 # macOS
 .DS_Store
